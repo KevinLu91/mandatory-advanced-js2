@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Navigation from './Navigation'
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {Helmet} from 'react-helmet'
 
 class Add extends React.Component {
@@ -12,7 +12,8 @@ class Add extends React.Component {
       description: "",
       director: "",
       rating: "",
-      movie: []
+      redirect: false,
+      error: false,
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,17 +35,21 @@ class Add extends React.Component {
       rating: this.state.rating
     }
     axios.post('http://3.120.96.16:3001/movies', data).then(res => {
-      this.setState({movie: res.data});
-    }).catch(function(error) {
-      console.log(error);
-    });
-    this.setState({title: ""});
-    this.setState({description: ""});
-    this.setState({director: ""});
-    this.setState({rating: ""});
+      this.setState({redirect: true})
+    }).catch((error) =>{
+      this.setState({error: true});
+    })
   }
-
   render() {
+    let errorMsg = null;
+    if(this.state.error){
+      errorMsg = "Error! The Title and Director must be between 1 and 40 characters. Description must be between 1 and 300 chracters and  rating be a number between 0.0 and 5.0";
+    }
+
+    if (this.state.redirect){
+      return <Redirect to="/" />
+    }
+
     return (<> < Helmet > <title>Add page</title>
   </Helmet>
   <div className='title'>
@@ -72,26 +77,8 @@ class Add extends React.Component {
       <button type="submit" onSubmit={this.handleSubmit}>Submit</button>
     </div>
   </form>
-  <div className="editTable">
-    <h3>Added Movie To The List:</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Description</th>
-          <th>Director</th>
-          <th>Rating</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{this.state.movie.title}</td>
-          <td>{this.state.movie.description}</td>
-          <td>{this.state.movie.director}</td>
-          <td>{this.state.movie.rating}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div className="errorMsg">
+    <p>{errorMsg}</p>
   </div>
 </>)
   }

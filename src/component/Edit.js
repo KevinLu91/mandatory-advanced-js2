@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import {Helmet} from 'react-helmet'
 import Navigation from './Navigation'
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 
 class Edit extends React.Component {
   constructor(props) {
@@ -12,7 +12,9 @@ class Edit extends React.Component {
       description: "",
       director: "",
       rating: "",
-      movie: []
+      movie: [],
+      redirect: false,
+      error: false
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -45,20 +47,25 @@ class Edit extends React.Component {
       rating: this.state.rating
     }
     let id = this.props.match.params.id;
-    axios.put('http://3.120.96.16:3001/movies/' + id, data).then(res => {
-      console.log(res);
-    }).then(update => {
-      this.getMovieID()
-    }).catch(function(error) {
-      console.log(error);
-    });
-    this.setState({title: ""});
-    this.setState({description: ""});
-    this.setState({director: ""});
-    this.setState({rating: ""});
+    axios.put('http://3.120.96.16:3001/movies/' + id, data).then(res => {}).then(update => {
+      this.getMovieID();
+      this.setState({redirect: true});
+    }).catch((error) => {
+      this.setState({error: true})
+    })
   }
 
   render() {
+
+    let errorMsg = null;
+    if (this.state.error) {
+      errorMsg = "Error! The Title and Director must be between 1 and 40 characters. Description must be between 1 and 300 chracters and  rating be a number between 0.0 and 5.0";
+    }
+
+    if (this.state.redirect) {
+      return <Redirect to="/"/>
+    }
+
     return (<> < Helmet > <title>Edit page</title>
   </Helmet>
   <div className='title'>
@@ -107,8 +114,10 @@ class Edit extends React.Component {
         </tr>
       </tbody>
     </table>
-  </div>
-</>)
+    <div className="errorMsg">
+      <p>{errorMsg}</p>
+    </div>
+  </div> < />)
   }
 }
 

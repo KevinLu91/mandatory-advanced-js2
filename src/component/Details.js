@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Helmet} from 'react-helmet'
 import Navigation from './Navigation'
 
@@ -9,22 +9,17 @@ class Details extends React.Component {
     super(props);
     this.state = {
       movieDetails: [],
-      editId: ""
+      editId: "",
     }
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
     let id = this.props.match.params.id;
     axios.get("http://3.120.96.16:3001/movies/" + id).then((response) => {
-      console.log(response.data)
       this.setState({movieDetails: response.data, editId: id});
-    })
-  }
-
-  handleSubmit(e) {
-    e.preventDefault()
-
+    }).catch(function(error) {
+      alert(error);
+    });
   }
 
   render() {
@@ -44,9 +39,7 @@ class Details extends React.Component {
   <p>Rating : <span>{this.state.movieDetails.rating}</span>
   </p>
   <div>
-    <button onClick={this.handleSubmit}>
-      <Link to={'/edit/' + editId}>Edit</Link>
-    </button>
+    <Link to={'/edit/' + editId}><button>Edit</button></Link>
   </div> < />)
   }
 }

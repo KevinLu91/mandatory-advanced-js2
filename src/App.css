@@ -128,3 +128,9 @@ form {
 h3 {
   font-family: "Comic Sans MS", sans-serif;
 }
+
+.errorMsg{
+  width: 60%;
+  margin: auto;
+  color: white;
+}

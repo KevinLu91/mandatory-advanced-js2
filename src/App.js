@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Main from './component/Main';
 import Add from './component/Add';
@@ -7,13 +6,9 @@ import Edit from './component/Edit';
 import Details from './component/Details';
 import {Helmet} from 'react-helmet'
 
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Route} from "react-router-dom";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    };
-
   render() {
       return (
         <div id='app'>
