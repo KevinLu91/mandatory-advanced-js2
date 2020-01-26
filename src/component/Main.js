@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import Navigation from './Navigation'
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 
 class Main extends React.Component{
   constructor(props){
@@ -9,6 +9,7 @@ class Main extends React.Component{
     this.state={
       movies: [],
       search: "",
+      redirect: false,
     }
     this.onDelete = this.onDelete.bind(this);
     this.onClick = this.onClick.bind(this);
@@ -40,6 +41,14 @@ class Main extends React.Component{
     axios.delete('http://3.120.96.16:3001/movies/' + e.target.id)
     .then((response) =>{
       this.getMovies()
+    }).catch((error)=>{
+      alert("This movie have already been deleted")
+      this.setState({redirect: true});
+    })
+    .then((response)=>{
+      this.getMovies()
+    }).catch(function (error){
+      alert(error)
     })
   }
 
@@ -52,7 +61,6 @@ class Main extends React.Component{
   }
 
   render(){
-    // validation
 
     return(
       <div id='mainContainer'>

@@ -1,8 +1,8 @@
 import React from 'react';
 import axios from 'axios';
 import {Helmet} from 'react-helmet'
-import Navigation from './Navigation'
 import {Redirect} from "react-router-dom";
+import Navigation from './Navigation'
 
 class Edit extends React.Component {
   constructor(props) {
@@ -24,7 +24,14 @@ class Edit extends React.Component {
     let id = this.props.match.params.id;
     (axios.get("http://3.120.96.16:3001/movies/" + id).then((response) => {
       this.setState({movie: response.data});
-    }))
+      this.setState({title: response.data.title});
+      this.setState({description: response.data.description})
+      this.setState({director: response.data.director})
+      this.setState({rating: response.data.rating})
+    })).catch((error)=>{
+      alert("This movie have already been deleted")
+      this.setState({redirect: true});
+    })
   }
 
   componentDidMount() {
@@ -48,7 +55,6 @@ class Edit extends React.Component {
     }
     let id = this.props.match.params.id;
     axios.put('http://3.120.96.16:3001/movies/' + id, data).then(res => {}).then(update => {
-      this.getMovieID();
       this.setState({redirect: true});
     }).catch((error) => {
       this.setState({error: true})

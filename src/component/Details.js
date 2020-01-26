@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Helmet} from 'react-helmet'
 import Navigation from './Navigation'
 
@@ -10,6 +10,7 @@ class Details extends React.Component {
     this.state = {
       movieDetails: [],
       editId: "",
+      redirect: false,
     }
   }
 
@@ -17,12 +18,18 @@ class Details extends React.Component {
     let id = this.props.match.params.id;
     axios.get("http://3.120.96.16:3001/movies/" + id).then((response) => {
       this.setState({movieDetails: response.data, editId: id});
-    }).catch(function(error) {
-      alert(error);
+    }).catch((error)=> {
+      alert("This movie have already been deleted");
+      this.setState({redirect: true});
     });
   }
 
   render() {
+
+    if(this.state.redirect){
+      return <Redirect to='/' />
+    }
+
     const editId = this.state.editId;
     return (<> < Helmet > <title>Detail page</title>
   </Helmet>
